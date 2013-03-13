@@ -3,7 +3,7 @@ package highlighter
 import "strings"
 import "bytes"
 
-func DiffLines(first string, second string) string {
+func DiffLines(first, second, start, stop string) string {
 	var result bytes.Buffer
 
 	isInHighlight := false
@@ -13,18 +13,20 @@ func DiffLines(first string, second string) string {
 		a, _, err := firstReader.ReadRune()
 		if err == nil {
 			if b != a {
-				isInHighlight = true
-				result.WriteString("\033[01;37m")
+				if !isInHighlight {
+					isInHighlight = true
+					result.WriteString(start)
+				}
 			} else if isInHighlight {
 				isInHighlight = false
-				result.WriteString("\033[0m")
+				result.WriteString(stop)
 			}
 		}
 		result.WriteString(string(b))
 	}
 
 	if isInHighlight {
-		result.WriteString("\033[0m")
+		result.WriteString(stop)
 	}
 
 	return result.String()

@@ -10,18 +10,19 @@ var diffTests = []struct {
 	wanted string
 }{
 	{"a", "a", "a"},
-	{"a", "b", "\033[01;37mb\033[0m"},
-	{"aa", "ab", "a\033[01;37mb\033[0m"},
-	{"Hallo", "Hello", "H\033[01;37me\033[0mllo"},
-	{"Halli", "Hello", "H\033[01;37me\033[0mll\033[01;37mo\033[0m"},
-	{"Hi", "Hello", "H\033[01;37mello\033[0m"},
-	{"Hello", "Hi", "H\033[01;37mi\033[0m"},
+	{"a", "b", "<b>b</b>"},
+	{"aa", "ab", "a<b>b</b>"},
+	{"Hallo", "Hello", "H<b>e</b>llo"},
+	{"Halli", "Hello", "H<b>e</b>ll<b>o</b>"},
+	{"Hi", "Hello", "H<b>ello</b>"},
+	{"Hello", "Hi", "H<b>i</b>"},
+	{"pipelight", "diff", "<b>d</b>i<b>ff</b>"},
 }
 
 func TestDiffLines(t *testing.T) {
 
 	for index, diffTest := range diffTests {
-		result := DiffLines(diffTest.first, diffTest.second)
+		result := DiffLines(diffTest.first, diffTest.second, "<b>", "</b>")
 		if result != diffTest.wanted {
 			output := fmt.Sprintf("%v \t diff of %v and %v should be %v but was %v.",
 				index, diffTest.first, diffTest.second, diffTest.wanted, result)
